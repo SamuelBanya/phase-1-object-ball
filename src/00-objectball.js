@@ -2,7 +2,7 @@ function gameObject() {
     return {
         home: {
             teamName: "Brooklyn Nets",
-            // colors: ["Black", "White"],
+            colors: ["Black", "White"],
             players: {
                 "Alan Anderson": { number: 0, shoe: 16, points: 22, rebounds: 12, assists: 12, steals: 3, blocks: 1, slamDunks: 1 },
                 "Reggie Evans": { number: 30, shoe: 14, points: 12, rebounds: 12, assists: 12, steals: 12, blocks: 12, slamDunks: 7 },
@@ -30,8 +30,10 @@ function homeTeamName() {
     return object["home"]["teamName"];
 }
 
-console.log(gameObject);
-console.log(homeTeamName());
+function awayTeamName() {
+    let object = gameObject();
+    return object["away"]["teamName"];
+}
 
 // Build a function, numPointsScored that takes in an argument of a player's name and returns the number of points scored for that player.
 // Think about where in the object you will find a player's points.
@@ -51,7 +53,7 @@ function players() {
     return Object.assign({}, homeTeam().players, awayTeam().players);
 }
 
-function numPointsScored(playerInput) {
+function numPointsScore(playerInput) {
     return players()[playerInput].points;
     /*
       Object.keys(players());
@@ -84,71 +86,123 @@ function numPointsScored(playerInput) {
 
 numPointsScore("DeSagna Diop");
 
-// TODO:
 // Build a function, shoeSize, that takes in an argument of a player's name and returns the shoe size for that player.
 // Think about how you will find the shoe size of the correct player.
 // How can you check and see if a player's name matches the name that has been passed into the function as an argument?
-function shoeSize(name) {
-    return { name["shoe"] }
+function shoeSize(playerName) {
+    // Create a 'players' object so that we can filter it for the 'name' accordingly so that we can grab that person's shoe size:
+    const players =  Object.assign({}, homeTeam().players, awayTeam().players);
+    // ISSUE:
+    // I am unable to use '.filter()' for the 'players' object I created:
+    // Use Array.prototype.filter() to filter out for the 'name' property:
+    // const matchingPlayer = players.filter(function (player) {
+    let matchingPlayerShoeSize;
+    for (let player in players) {
+        if (player === playerName) {
+            matchingPlayerShoeSize = players[player]["shoe"];
+        }
+    }
+
+    return matchingPlayerShoeSize;
 }
+
+shoeSize("Jeff Adrien");
 
 // From Walkthrough Video:
 function findByTeamName(teamName) {
     return teams.find(team => teamName === team.teamName);
 }
 
+// From Walkthrough Video:
 // Build a function, teamColors, that takes in an argument of the team name and returns an array of that teams colors.
 // function teamColors(homeOrAway["teamName"]) {
 function teamColors(teamName) {
     return findByTeamName(teamName).colors;
 }
 
+// From Walkthrough Video:
 // Build a function, teamNames, that operates on the game object to return an array of the team names.
 function teamNames(gameObject) {
     // return [gameObject["home"]["teamName"], gameObject["away"]["teamName"]];
     return team.map(team => team.teamName);
 }
 
-// TODO:
 // Build a function, playerNumbers, that takes in an argument of a team name and returns an array of the jersey number's for that team.
-function playerNumbers(teamName) {
-    return GameObject()["teamName"]["players"]["number"];
+function playerNumbers(teamNameChoice) {
+    homeTeamObj = homeTeam();
+    awayTeamObj = awayTeam();
+    // Cycle through the 'players' object to create an array of each of the jersey numbers:
+    let jerseyNumbersArray = [];    
+    let homePlayers = homeTeamObj["players"];
+    let awayPlayers = awayTeamObj["players"];
+    // let matchingPlayerShoeSize;
+    for (let player in homePlayers) {
+        jerseyNumbersArray.push(homePlayers[player]["number"]);
+    }
+    for (let player in awayPlayers) {
+        jerseyNumbersArray.push(awayPlayers[player]["number"]);
+    }
+    return jerseyNumbersArray;
+
 }
 
-// TODO:
+playerNumbers("Brooklyn Nets");
+
 // Build a function, playerStats, that takes in an argument of a player's name and returns a object of that player's stats.
 function playerStats(playerName) {
-    return GameObject()["players"]
+    const players =  Object.assign({}, homeTeam().players, awayTeam().players);
+    const specificPlayerStats = players[playerName];
+    return specificPlayerStats;
 }
 
-// Example run of playerStats() function:
-/*
-  playerStats("Alan Anderson")
-  // returns:
-  {
-  number: 0,
-  shoe: 16,
-  points: 22,
-  rebounds: 12,
-  assists: 12,
-  steals: 3,
-  blocks: 1,
-  slamDunks: 1
-  }
-*/
+playerStats("Reggie Evans");
 
-// TODO:
 // Build a function, bigShoeRebounds, that will return the number of rebounds associated with the player that has the largest shoe size.
 // Break this one down into steps:
 // First, find the player with the largest shoe size
 // Then, return that player's number of rebounds
 // Remember to think about return values here. Use debugger to drop into your function and understand what it is returning and why.
-function bigShoeRebounds(gameObject) {
-    largestShoeSizePlayer = gameObject()["players"]["shoe"];
-    largestShoeSizePlayerRebounds = gameObject[largestShoeSizePlayer];
+function bigShoeRebounds() {
+    const players =  Object.assign({}, homeTeam().players, awayTeam().players);
+
+    let maxShoeSize;
+    let playerDecision;
+
+    for (let player in players) {
+        if(!maxShoeSize || players[player]["shoe"] > maxShoeSize["shoe"]) {
+            playerDecision = player;
+            maxShoeSize = players[player]["shoe"];
+        }
+    }
+
+    let playerRebounds = players[playerDecision]["rebounds"];
+
+    return playerRebounds;
 }
+
+bigShoeRebounds();
 
 // Bonus Points:
 // Which player has the most points? Call the function mostPointsScored.
+function mostPointsScored() {
+    const players =  Object.assign({}, homeTeam().players, awayTeam().players);
+
+    let maxPoints;
+    let playerDecision;
+
+    for (let player in players) {
+        if(!maxPoints || players[player]["points"] > maxPoints["points"]) {
+            playerDecision = player;
+            maxPoints = players[player]["points"];
+        }
+    }
+
+    // NOTE: I don't think this is accurate, but this is just for 'bonus' for the attempt
+    // Not sure this doesn't match 'bigShoeRebounds()' function's logic though
+    return playerDecision;
+}
+
+mostPointsScored();
+
 // Which team has the most points? Call the function winningTeam.
 // Which player has the longest name? Call the function playerWithLongestName.
